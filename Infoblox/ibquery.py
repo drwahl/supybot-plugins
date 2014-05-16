@@ -6,9 +6,9 @@ except ImportError:
     import json
 from httplib import HTTPSConnection
 
-infoblox_host = 'infoblox.example.com'
-username = 'user'
-password = 'password'
+infoblox_host = 'infoblox.west.isilon.com'
+username = 'izzi'
+password = '11235813'
 
 def do_query(query):
     """executes webapi query"""
@@ -41,7 +41,7 @@ def host_query(host):
 def mac_query(mac):
     """searches infoblox database for hostnames/ips with matching input"""
 
-    results = do_query(('GET', '/wapi/v1.0/lease', 'hardware~=%s' % mac))
+    results = do_query(('GET', '/wapi/v1.0/search', 'search_string~=%s' % mac))
 
     return results
 
@@ -97,6 +97,7 @@ if __name__ == "__main__":
         print '%s - %s' % (result['network'], result['comment'])
     elif args.mac_to_query:
         result = mac_query(args.mac_to_query)
-        print result
+        for host in result:
+            print '%s: %s' % (host['name'], host['ipv4addrs'][0]['ipv4addr'])
     else:
         cmd_parser.print_help()

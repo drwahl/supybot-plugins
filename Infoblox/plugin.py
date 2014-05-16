@@ -65,6 +65,40 @@ class Infoblox(callbacks.Plugin):
         irc.reply(answer)
     vlan = wrap(vlan, ['text'])
 
+    def ip(self, irc, msg, args, ip):
+        """ip <ip>
+
+           Returns the host record(s) that match (substring parsing) the given IP.
+        """
+        tmp_answer = []
+        answer = False
+        result = ibquery.ip_query(ip)
+        if len(result) > 0:
+            for key in result.keys():
+                tmp_answer.append('%s: %s' % (key, result[key]))
+            answer = ' | '.join(tmp_answer)
+        else:
+            answer = '%s has no associated records/leases' % ip
+        irc.reply(answer)
+    ip = wrap(ip, ['text'])
+
+    def mac(self, irc, msg, args, mac):
+        """ip <ip>
+
+           Returns the host record(s) that match (substring parsing) the given IP.
+        """
+        tmp_answer = []
+        answer = False
+        results = ibquery.mac_query(mac)
+        if len(results) > 0:
+            for search_result in results:
+                tmp_answer.append('%s: %s' % (search_result['name'], search_result['ipv4addrs'][0]['ipv4addr']))
+            answer = ' | '.join(tmp_answer)
+        else:
+            answer = '%s has no associated records/leases' % ip
+        irc.reply(answer)
+    mac = wrap(mac, ['text'])
+
 
 Class = Infoblox
 
