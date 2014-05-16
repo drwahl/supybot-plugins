@@ -36,12 +36,7 @@ import supybot.plugins as plugins
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 import SOAPpy
-import urllib2
-import urllib
-import threading
-import time
 import re
-import simplejson as json
 
 class Jira(callbacks.Plugin):
     def __init__(self, irc):
