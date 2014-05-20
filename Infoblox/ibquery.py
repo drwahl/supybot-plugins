@@ -6,9 +6,9 @@ except ImportError:
     import json
 from httplib import HTTPSConnection
 
-infoblox_host = 'infoblox.west.isilon.com'
-username = 'izzi'
-password = '11235813'
+infoblox_host = 'example.com'
+username = 'user'
+password = 'password'
 
 def do_query(query):
     """executes webapi query"""
