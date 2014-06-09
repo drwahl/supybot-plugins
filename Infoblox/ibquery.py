@@ -6,8 +6,8 @@ except ImportError:
     import json
 from httplib import HTTPSConnection
 
-infoblox_host = 'example.com'
-username = 'user'
+infoblox_host = 'infoblox.example.com'
+username = 'username'
 password = 'password'
 
 def do_query(query):
@@ -15,16 +15,17 @@ def do_query(query):
 
     conn = HTTPSConnection(infoblox_host)
     auth_header = 'Basic %s' % (':'.join([username, password]).encode('Base64').strip('\r\n'))
-    conn.request(query[0], query[1], query[2], {'Authorization': auth_header, 'Content-Type': 'application/x-www-form-urlencoded'})
+    conn.request(query[0], '/wapi/v1.4/' + query[1], query[2], {'Authorization': auth_header, 'Content-Type': 'application/x-www-form-urlencoded'})
     result = json.loads(conn.getresponse().read())
     conn.close()
+    print result
     return result
 
 
 def host_query(host):
     """searches (substring matching) infoblox database for hostnames matching input (regex)"""
 
-    results = do_query(('GET', '/wapi/v1.0/record:host', 'name~=%s' % host))
+    results = do_query(('GET', 'record:host', 'name~=%s' % host))
 
     hosts_and_ips = {}
 
@@ -41,7 +42,7 @@ def host_query(host):
 def mac_query(mac):
     """searches infoblox database for hostnames/ips with matching input"""
 
-    results = do_query(('GET', '/wapi/v1.0/search', 'search_string~=%s' % mac))
+    results = do_query(('GET', 'search', 'search_string~=%s' % mac))
 
     return results
 
@@ -49,7 +50,7 @@ def mac_query(mac):
 def ip_query(ip):
     """searches (substring matching) infoblox database for hostnames with IPs matching input (regex)"""
 
-    results = do_query(('GET', '/wapi/v1.0/record:host_ipv4addr', 'ipv4addr~=%s' % ip))
+    results = do_query(('GET', 'record:host_ipv4addr', 'ipv4addr~=%s' % ip))
 
     ips_and_hosts = {}
 
@@ -63,10 +64,10 @@ def ip_query(ip):
 def vlan_query(ip):
     """determines vlan/network a given IP resides in"""
 
-    network_results = do_query(('GET', '/wapi/v1.0/ipv4address', 'ip_address=%s' % ip))
+    network_results = do_query(('GET', 'ipv4address', 'ip_address=%s' % ip))
 
     network = network_results[0]['network']
-    results = do_query(('GET', '/wapi/v1.0/network', 'network=%s' % network))
+    results = do_query(('GET', 'network', 'network=%s' % network))
     if type(results) is list:
         if len(results) is 1:
             results = results[0]
