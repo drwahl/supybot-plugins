@@ -18,7 +18,6 @@ def do_query(query):
     conn.request(query[0], '/wapi/v1.4/' + query[1], query[2], {'Authorization': auth_header, 'Content-Type': 'application/x-www-form-urlencoded'})
     result = json.loads(conn.getresponse().read())
     conn.close()
-    print result
     return result
 
 
